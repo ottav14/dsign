@@ -1,0 +1,46 @@
+:root {
+	--toolBarWidth: 5rem;
+}
+
+body {
+	display: flex;
+	margin: 0;
+}
+
+#toolbar {
+	position: fixed;
+	width: var(--toolBarWidth);
+	height: 100vh;
+}
+
+#nodeButton {
+	font-size: 32pt;
+}
+
+#nodeIcon {
+	display: inline-block;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	border: 3px solid #000;
+}
+
+#moveButton {
+	font-size: 32pt;
+}
+
+.button:hover {
+	background-color: #ddd;
+}
+
+.activeButton, .activeButton:hover {
+	background-color: #999;
+}
+
+.button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: var(--toolBarWidth);
+	height: var(--toolBarWidth);
+}
