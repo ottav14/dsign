@@ -4,10 +4,19 @@ import { getGuideNode, setGuideNode } from './guideNode.js';
 import { getSelectedNode, setSelectedNode } from './selectedNode.js';
 import displayLoop from './display.js';
 import { createNode, getNodes } from './nodes.js';
+import { addConnection } from './connections.js';
 
 let mouseX = 0;
 let mouseY = 0;
 let mouseHeld = false;
+
+const deselectNode = () => {
+	const selectedNode = getSelectedNode();
+	if(selectedNode) {
+		selectedNode.selected = false;
+		setSelectedNode(null);
+	}
+}
 
 const selectNode = (n) => {
 	const selectedNode = getSelectedNode();
@@ -16,7 +25,15 @@ const selectNode = (n) => {
 
 	n.selected =  true;
 	setSelectedNode(n);
-	displayLoop();
+}
+
+const connectNodes = (n1, n2) => {
+	if(!n1.connections.includes(n2) && n1 !== n2) {
+		n1.connections.push(n2);
+		n2.connections.push(n1);
+		addConnection([n1, n2]);
+		console.log('fart');
+	}
 }
 
 const handleMouseDown = () => {
@@ -31,6 +48,22 @@ const handleMouseDown = () => {
 			for(const n of nodes) {
 				if(n.checkHover(mouseX, mouseY)) {
 					selectNode(n);
+					break;
+				}
+			}
+			break;
+		case 'line':
+			for(const n of nodes) {
+				if(n.checkHover(mouseX, mouseY)) {
+					const selectedNode = getSelectedNode();
+					if(selectedNode) {
+						connectNodes(selectedNode, n);
+						deselectNode();
+					}
+					else
+						selectNode(n);
+
+					displayLoop();
 					break;
 				}
 			}

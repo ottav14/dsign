@@ -13,20 +13,12 @@ body {
 	height: 100vh;
 }
 
-#nodeButton {
-	font-size: 32pt;
-}
-
 #nodeIcon {
 	display: inline-block;
 	width: 2rem;
 	height: 2rem;
 	border-radius: 50%;
 	border: 3px solid #000;
-}
-
-#moveButton {
-	font-size: 32pt;
 }
 
 .button:hover {
@@ -43,4 +35,5 @@ body {
 	align-items: center;
 	width: var(--toolBarWidth);
 	height: var(--toolBarWidth);
+	font-size: 32pt;
 }
