@@ -1,9 +1,11 @@
 import Node from './Node.js';
+import { deselectNode } from './Node.js';
 import initControls from './controls.js';
 import { getMode, setMode } from './mode.js';
 import { getGuideNode, setGuideNode } from './guideNode.js';
 import { getSelectedNode, setSelectedNode } from './selectedNode.js';
 import displayLoop from './display.js';
+import { showNodeInfo, hideNodeInfo } from './nodeInfoDisplay.js';
 
 const modes = [ 'node', 'move', 'line' ];
 
@@ -37,14 +39,13 @@ const switchMode = (newMode) => {
 
 	const mode = getMode();
 
-	const guideNode = getGuideNode();
-	if(mode === 'node')
-		setGuideNode(null);
-
-	const selectedNode = getSelectedNode();
-	if(mode === 'move' && selectedNode) {
-		selectedNode.selected = false;
-		setSelectedNode(null);
+	switch(mode) {
+		case 'node':
+			setGuideNode(null);
+			break;
+		case 'move':
+			deselectNode();
+			break;
 	}
 
 	switchActiveButton(newMode);
@@ -67,6 +68,5 @@ const createNode = (x, y) => {
 }
 
 initControls();
-
 
 
