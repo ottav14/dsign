@@ -14,6 +14,25 @@ let mouseDX = 0;
 let mouseDY = 0;
 let mouseHeld = false;
 
+const hue = (h) => {
+	h = h % 360;
+	let x = 1 - Math.abs((h/60) % 2 - 1);
+
+	let r1, g1, b1;
+	if(h<60)       [r1,g1,b1] = [1,x,0];
+	else if(h<120) [r1,g1,b1] = [x,1,0];
+	else if(h<180) [r1,g1,b1] = [0,1,x];
+	else if(h<240) [r1,g1,b1] = [0,x,1];
+	else if(h<300) [r1,g1,b1] = [x,0,1];
+	else           [r1,g1,b1] = [1,0,x];
+
+	const r = Math.round(255*r1);
+	const g = Math.round(255*g1);
+	const b = Math.round(255*b1);
+
+	return [ r, g, b ];
+}
+
 const handleNodeTextInput = (e) => {
 	const selectedNode = getSelectedNode();
 	selectedNode.text = e.target.value;
@@ -23,6 +42,15 @@ const nodeTextInput = document.getElementById('nodeTextInput');
 nodeTextInput.addEventListener('input', handleNodeTextInput);
 nodeTextInput.value = '';
 
+const handleNodeColorInput = (e) => {
+	const selectedNode = getSelectedNode();
+	const [ r, g, b ] = hue(e.target.value);
+	selectedNode.col = `rgb(${r}, ${g}, ${b})`;
+	displayLoop();
+}
+const nodeColorRange = document.getElementById('colorRange');
+nodeColorRange.addEventListener('input', handleNodeColorInput);
+nodeColorRange.value = '240';
 
 const handleMouseDown = () => {
 	mouseHeld = true;

@@ -19,8 +19,19 @@
 			</button>
 		</div>
 		<div id="nodeInfo" class="nodeInfo hidden">
-			<label for="nodeTextInput" class="inputLabel">Text</label>
-			<input id="nodeTextInput" type="text">
+			<div class="inputContainer">
+				<label for="nodeTextInput" class="inputLabel">Text</label>
+				<input id="nodeTextInput" type="text">
+			</div>
+			<div class="inputContainer">
+				<label for="colorRange" class="inputLabel">Color</label>
+				<input 
+					id="colorRange" 
+					type="range"
+					min="0"
+					max="340"
+				>	
+			</div>
 		</div>
 		<canvas id="canvas"></canvas>
 		<script type="module" src="/src/main.js"></script>

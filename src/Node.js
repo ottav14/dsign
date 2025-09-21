@@ -46,6 +46,7 @@ class Node {
 		this.selected = false;
 		this.connections = [];
 		this.text = '';
+		this.col = '#00f';
 	}
 
 	display() {
@@ -53,7 +54,7 @@ class Node {
 		const hh = this.h/2;
 
 		// Styling
-		ctx.fillStyle = this.guide ? 'rgba(77, 77, 77, 0.7)' : 'rgb(0, 0, 255)';
+		ctx.fillStyle = this.guide ? 'rgba(77, 77, 77, 0.7)' : this.col;
 
 		// Middle
 		ctx.fillRect(this.x-hw, this.y-hh, this.w, this.h);
