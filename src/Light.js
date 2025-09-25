@@ -9,10 +9,12 @@ class Light {
 		this.x = x;
 		this.y = y;
 		this.connections = [];
+		this.state = false;
 	}
 
 	display() {
-		drawCircle(this.x, this.y, '#fff', false);
+		const col = this.state ? '#ff0' : '#fff';
+		drawCircle(this.x, this.y, col, false);
 	}
 
 	checkHover(mx, my) {

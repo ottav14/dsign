@@ -22,10 +22,12 @@ class Switch {
 		this.selected = false;
 		this.connections = [];
 		this.text = '';
+		this.state = false;
 	}
 
 	display() {
-		drawCircle(this.x, this.y, '#f00', false);
+		const col = this.state ? '#0f0' : '#f00';
+		drawCircle(this.x, this.y, col, false);
 	}
 
 	checkHover(mx, my) {
@@ -42,6 +44,10 @@ class Switch {
 
 		this.selected =  true;
 		setSelected(this);
+	}
+
+	toggle() {
+		this.state = !this.state;
 	}
 }
 export default Switch;

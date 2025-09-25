@@ -2,8 +2,9 @@ import Switch from './Switch.js';
 import initControls from './controls.js';
 import { getMode, setMode } from './mode.js';
 import displayLoop from './display.js';
+import { circuitUpdate } from './circuit.js';
 
-const modes = [ 'switch', 'light', 'move', 'line' ];
+const modes = [ 'switch', 'light', 'move', 'line', 'interact' ];
 
 const canvas = document.getElementById('canvas');
 canvas.width = window.innerWidth;
@@ -17,7 +18,6 @@ const handleWindowResize = () => {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 	ctx.lineWidth = 4;
-	displayLoop();
 }
 window.addEventListener('resize', handleWindowResize);
 
@@ -36,7 +36,6 @@ const switchMode = (newMode) => {
 	switchActiveButton(newMode);
 	setMode(newMode);
 
-	displayLoop();
 }
 for(const m of modes)
 	document.getElementById(`${m}Button`).addEventListener('click', () => switchMode(m));
@@ -46,5 +45,15 @@ const createSwitch = (x, y) => {
 }
 
 initControls();
+
+const update = () => {
+
+	displayLoop();
+	circuitUpdate();
+
+	requestAnimationFrame(update);
+}
+update();
+
 
 

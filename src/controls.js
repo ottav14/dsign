@@ -2,7 +2,6 @@ import Switch from './Switch.js';
 import { connectSwitches } from './Switch.js';
 import { getMode } from './mode.js';
 import { getSelected, setSelected, deselect } from './selected.js';
-import displayLoop from './display.js';
 import { createSwitch, getSwitches } from './switches.js';
 import { addConnection } from './connections.js';
 import { createLight, getLights } from './lights.js';
@@ -57,7 +56,7 @@ const handleMouseDown = () => {
 	const mode = getMode();
 	const switches = getSwitches();
 	const lights = getLights();
-	let hovered;
+	const hovered = checkHovers();
 	switch(mode) {
 		case 'switch':
 			createSwitch(mouseX, mouseY);
@@ -66,8 +65,6 @@ const handleMouseDown = () => {
 			createLight(mouseX, mouseY);
 			break;
 		case 'move':
-			hovered = checkHovers();
-
 			if(hovered) {
 				hovered.select();
 				mouseDX = hovered.x - mouseX;
@@ -77,10 +74,9 @@ const handleMouseDown = () => {
 				deselect();
 			break;
 		case 'line':
-			hovered = checkHovers();
 			if(hovered) {
 				const selected = getSelected();
-				if(selected) {
+				if(selected && selected !== hovered) {
 					addConnection([selected, hovered]);
 					deselect();
 				}
@@ -90,8 +86,11 @@ const handleMouseDown = () => {
 			else
 				deselect();
 			break;
+		case 'interact':
+			if(hovered && hovered instanceof Switch)
+				hovered.toggle();
+			break;
 	}
-	displayLoop();
 }
 
 const handleMouseUp = () => {
@@ -116,11 +115,9 @@ const handleMouseMove = (e) => {
 			if(mouseHeld && selected) {
 				selected.x = mouseX + mouseDX;
 				selected.y = mouseY + mouseDY;
-				displayLoop();
 			}
 			break;
 	}
-	displayLoop();
 }
 
 const initControls = () => {
