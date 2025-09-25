@@ -1,13 +1,9 @@
-import Node from './Node.js';
-import { deselectNode } from './Node.js';
+import Switch from './Switch.js';
 import initControls from './controls.js';
 import { getMode, setMode } from './mode.js';
-import { getGuideNode, setGuideNode } from './guideNode.js';
-import { getSelectedNode, setSelectedNode } from './selectedNode.js';
 import displayLoop from './display.js';
-import { showNodeInfo, hideNodeInfo } from './nodeInfoDisplay.js';
 
-const modes = [ 'node', 'move', 'line' ];
+const modes = [ 'switch', 'light', 'move', 'line' ];
 
 const canvas = document.getElementById('canvas');
 canvas.width = window.innerWidth;
@@ -37,34 +33,16 @@ const switchActiveButton = (m) => {
 
 const switchMode = (newMode) => {
 
-	const mode = getMode();
-
-	switch(mode) {
-		case 'node':
-			setGuideNode(null);
-			break;
-		case 'move':
-			deselectNode();
-			break;
-	}
-
 	switchActiveButton(newMode);
-	switch(newMode) {
-		case 'node':
-			break;
-		case 'move':
-			break;
-	}
 	setMode(newMode);
 
 	displayLoop();
 }
-document.getElementById('nodeButton').addEventListener('click', () => switchMode('node'));
-document.getElementById('moveButton').addEventListener('click', () => switchMode('move'));
-document.getElementById('lineButton').addEventListener('click', () => switchMode('line'));
+for(const m of modes)
+	document.getElementById(`${m}Button`).addEventListener('click', () => switchMode(m));
 
-const createNode = (x, y) => {
-	nodes.push(new Node(x, y));
+const createSwitch = (x, y) => {
+	nodes.push(new Switch(x, y));
 }
 
 initControls();

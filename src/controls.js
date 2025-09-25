@@ -1,12 +1,11 @@
-import Node from './Node.js';
-import { selectNode, deselectNode, connectNodes } from './Node.js';
+import Switch from './Switch.js';
+import { connectSwitches } from './Switch.js';
 import { getMode } from './mode.js';
-import { getGuideNode, setGuideNode } from './guideNode.js';
-import { getSelectedNode, setSelectedNode } from './selectedNode.js';
+import { getSelected, setSelected, deselect } from './selected.js';
 import displayLoop from './display.js';
-import { createNode, getNodes } from './nodes.js';
+import { createSwitch, getSwitches } from './switches.js';
 import { addConnection } from './connections.js';
-import { showNodeInfo, hideNodeInfo } from './nodeInfoDisplay.js';;
+import { createLight, getLights } from './lights.js';
 
 let mouseX = 0;
 let mouseY = 0;
@@ -33,67 +32,63 @@ const hue = (h) => {
 	return [ r, g, b ];
 }
 
-const handleNodeTextInput = (e) => {
-	const selectedNode = getSelectedNode();
-	selectedNode.text = e.target.value;
-	displayLoop();
-}
-const nodeTextInput = document.getElementById('nodeTextInput');
-nodeTextInput.addEventListener('input', handleNodeTextInput);
-nodeTextInput.value = '';
+const checkHovers = () => {
+	let hovered = null;
+	const switches = getSwitches();
+	for(const s of switches) {
+		if(s.checkHover(mouseX, mouseY)) {
+			hovered = s;
+			break;
+		}
+	}
 
-const handleNodeColorInput = (e) => {
-	const selectedNode = getSelectedNode();
-	const [ r, g, b ] = hue(e.target.value);
-	selectedNode.col = `rgb(${r}, ${g}, ${b})`;
-	displayLoop();
+	const lights = getLights();
+	for(const l of lights) {
+		if(l.checkHover(mouseX, mouseY)) {
+			hovered = l;
+			break;
+		}
+	}
+	return hovered;
 }
-const nodeColorRange = document.getElementById('colorRange');
-nodeColorRange.addEventListener('input', handleNodeColorInput);
-nodeColorRange.value = '240';
 
 const handleMouseDown = () => {
 	mouseHeld = true;
 	const mode = getMode();
-	const nodes = getNodes();
+	const switches = getSwitches();
+	const lights = getLights();
 	let hovered;
 	switch(mode) {
-		case 'node':
-			createNode(mouseX, mouseY);
+		case 'switch':
+			createSwitch(mouseX, mouseY);
+			break;
+		case 'light':
+			createLight(mouseX, mouseY);
 			break;
 		case 'move':
-			for(const n of nodes) {
-				if(n.checkHover(mouseX, mouseY)) {
-					hovered = n;
-					break;
-				}
-			}
+			hovered = checkHovers();
+
 			if(hovered) {
-				selectNode(hovered)
+				hovered.select();
 				mouseDX = hovered.x - mouseX;
 				mouseDY = hovered.y - mouseY;
 			}
 			else
-				deselectNode();
+				deselect();
 			break;
 		case 'line':
-			for(const n of nodes) {
-				if(n.checkHover(mouseX, mouseY)) {
-					hovered = n;
-					break;
-				}
-			}
+			hovered = checkHovers();
 			if(hovered) {
-				const selectedNode = getSelectedNode();
-				if(selectedNode) {
-					connectNodes(selectedNode, hovered);
-					deselectNode();
+				const selected = getSelected();
+				if(selected) {
+					addConnection([selected, hovered]);
+					deselect();
 				}
 				else
-					selectNode(hovered);
+					hovered.select();
 			}
 			else
-				deselectNode();
+				deselect();
 			break;
 	}
 	displayLoop();
@@ -112,29 +107,20 @@ const handleMouseUp = () => {
 
 const handleMouseMove = (e) => {
 	const mode = getMode();
-	const guideNode = getGuideNode();
-	const selectedNode = getSelectedNode();
+	const selected = getSelected();
 	mouseX = e.clientX;
 	mouseY = e.clientY;
 
 	switch(mode) {
-		case 'node':
-			if(!guideNode)
-				setGuideNode(new Node(mouseX, mouseY, true));
-			else {
-				guideNode.x = mouseX;
-				guideNode.y = mouseY;
-			}
-			displayLoop();
-			break;
 		case 'move':
-			if(mouseHeld && selectedNode) {
-				selectedNode.x = mouseX + mouseDX;
-				selectedNode.y = mouseY + mouseDY;
+			if(mouseHeld && selected) {
+				selected.x = mouseX + mouseDX;
+				selected.y = mouseY + mouseDY;
 				displayLoop();
 			}
 			break;
 	}
+	displayLoop();
 }
 
 const initControls = () => {

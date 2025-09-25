@@ -29,7 +29,7 @@ body {
 	padding-top: 1rem;
 }
 
-.nodeInfo {
+.switchInfo {
 	position: relative;
 	z-index: 1;
 	display: flex;
@@ -43,12 +43,16 @@ body {
 	margin: 1rem;
 }
 
-#nodeIcon {
+#switchIcon, #lightIcon {
 	display: inline-block;
 	width: 2rem;
 	height: 2rem;
 	border-radius: 50%;
 	border: 3px solid #000;
+}
+
+#lightIcon {
+	background-color: #000;
 }
 
 #borderRadiusRange {

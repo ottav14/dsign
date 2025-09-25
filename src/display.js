@@ -1,8 +1,10 @@
-import { clearCanvas, drawLine, drawCurve } from './draw.js';
-import { getGuideNode } from './guideNode.js';
-import { getNodes } from './nodes.js';
-import { getSelectedNode } from './selectedNode.js';
+import { clearCanvas, drawLine, drawCurve, drawCircle } from './draw.js';
+import { getSwitches } from './switches.js';
+import { getSelected } from './selected.js';
 import { getConnections } from './connections.js';
+import { getMode } from './mode.js';
+import getMousePos from './mouse.js';
+import { getLights } from './lights.js';
 
 const drawConnections = () => {
 	const connections = getConnections();
@@ -18,11 +20,10 @@ const drawConnections = () => {
 			left = c[1];
 			right = c[0];
 		}
-		const hl = left.w/2 + left.h/2;
-		const hr = right.w/2 + right.h/2;
 
-		const p0 = { x: left.x+hl,  y: left.y };
-		const p3 = { x: right.x-hr, y: right.y };
+		const r = 50;
+		const p0 = { x: left.x+r,  y: left.y };
+		const p3 = { x: right.x-r, y: right.y };
 
 		const dp = { x: p3.x-p0.x, y: p3.y-p0.y };
 		const mag = Math.sqrt(dp.x*dp.x + dp.y*dp.y);
@@ -42,18 +43,25 @@ const displayLoop = () => {
 
 	drawConnections();
 
-	const nodes = getNodes();
-	for(const n of nodes)
-		if(!n.selected)
-			n.display();
+	const switches = getSwitches();
+	for(const s of switches)
+		s.display();
 
-	const selectedNode = getSelectedNode();
-	if(selectedNode)
-		selectedNode.display();
+	const lights = getLights();
+	for(const l of lights)
+		l.display();
 
-	const guideNode = getGuideNode();
-	if(guideNode)
-		guideNode.display();
+	const mode = getMode();
+	const ctx = document.getElementById('canvas').getContext('2d');
+	const [ mouseX, mouseY ] = getMousePos();
+	switch(mode) {
+		case 'switch':
+			drawCircle(mouseX, mouseY, '#f00', true);
+			break;
+		case 'light':
+			drawCircle(mouseX, mouseY, '#fff', true);
+			break;
+	}
 
 }
 export default displayLoop;
